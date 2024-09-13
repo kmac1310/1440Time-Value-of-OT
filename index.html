@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1440TIME On-Time Value Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+        #onTimeValue, #remainingTime, #perMinuteValue {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #explanation {
+            text-align: left;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>1440TIME On-Time Value Tracker</h1>
+    
+    <div id="setup">
+        <h2>Initial Setup</h2>
+        <input type="number" id="annualIncome" placeholder="Annual Income">
+        <input type="number" id="sleepHours" placeholder="Daily Sleep Hours">
+        <button onclick="calculatePerMinuteValue()">Set Up</button>
+    </div>
+
+    <div id="daily" style="display:none;">
+        <h2>Daily Tracker</h2>
+        <input type="number" id="workHours" placeholder="Today's Work Hours">
+        <button onclick="calculateOnTime()">Calculate On-Time</button>
+        <div id="perMinuteValue"></div>
+        <div id="onTimeValue"></div>
+        <div id="remainingTime"></div>
+        <button onclick="resetCalculator()">Reset</button>
+    </div>
+
+    <div id="explanation" style="display:none;">
+        <h3>Understanding Your 1440TIME On-Time Value</h3>
+        <p>In the 1440TIME system, every minute of your day is valuable. Your On-Time is the time you have outside of sleep and work - it's your opportunity to invest in yourself, your goals, and your passions.</p>
+        <p>The value shown represents the potential worth of your On-Time if used as productively as your work hours. It's not money earned, but a measure of the opportunity your time presents.</p>
+        <p>Remember: You own your On-Time. It's not "free time" or "spare time" - it's valuable time for you to make a difference in your life. Use it wisely and intentionally!</p>
+    </div>
+
+    <script>
+        let perMinuteValue = 0;
+        let onTimeMinutes = 0;
+        let sleepMinutesPerYear = 0;
+
+        function calculatePerMinuteValue() {
+            const annualIncome = parseFloat(document.getElementById('annualIncome').value);
+            const sleepHours = parseFloat(document.getElementById('sleepHours').value);
+            sleepMinutesPerYear = sleepHours * 365 * 60;
+            const workMinutesPerYear = 8 * 5 * 52 * 60; // Assuming 8 hours, 5 days a week, 52 weeks
+            const totalMinutesPerYear = 365 * 1440;
+            const onTimeMinutesPerYear = totalMinutesPerYear - sleepMinutesPerYear - workMinutesPerYear;
+            
+            perMinuteValue = annualIncome / onTimeMinutesPerYear;
+            
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('daily').style.display = 'block';
+            document.getElementById('explanation').style.display = 'block';
+            document.getElementById('perMinuteValue').textContent = `Your On-Time is worth $${perMinuteValue.toFixed(2)} per minute`;
+        }
+
+        function calculateOnTime() {
+            const workHours = parseFloat(document.getElementById('workHours').value);
+            const sleepMinutesPerDay = sleepMinutesPerYear / 365;
+            onTimeMinutes = 1440 - sleepMinutesPerDay - (workHours * 60);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const onTimeValue = (perMinuteValue * onTimeMinutes).toFixed(2);
+            document.getElementById('onTimeValue').textContent = `Today's On-Time Value: $${onTimeValue}`;
+            document.getElementById('remainingTime').textContent = `Remaining On-Time: ${onTimeMinutes.toFixed(0)} minutes`;
+        }
+
+        function resetCalculator() {
+            document.getElementById('setup').style.display = 'block';
+            document.getElementById('daily').style.display = 'none';
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('annualIncome').value = '';
+            document.getElementById('sleepHours').value = '';
+            document.getElementById('workHours').value = '';
+            perMinuteValue = 0;
+            onTimeMinutes = 0;
+            sleepMinutesPerYear = 0;
+        }
+    </script>
+</body>
+</html>
